@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <!-- Mencegah pengguna melakukan zoom in/out di perangkat seluler -->
+  <!-- Skala Viewport Khusus Mobile agar Responsif & Anti-Zoom -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Informasi - SMA IPIEMS Surabaya</title>
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1Q1HT3ZE3LC4Zd21ddzF0kdIH6brmDWw1">
@@ -28,20 +28,19 @@
       padding: 0;
       font-family: 'Plus Jakarta Sans', sans-serif;
       user-select: none;
-      /* Mencegah highlight biru saat teks disentuh di ponsel */
-      -webkit-tap-highlight-color: transparent; 
+      -webkit-tap-highlight-color: transparent;
     }
 
+    /* Layout Dasar untuk Layar TV / Desktop */
     body {
       width: 100vw;
       height: 100vh;
-      overflow: hidden; /* Mencegah scroll keseluruhan halaman */
+      overflow: hidden;
       background-color: var(--bg-base);
       color: #1e293b;
       display: flex;
       flex-direction: column;
       position: relative;
-      touch-action: none; /* Mencegah pull-to-refresh di ponsel */
     }
 
     /* Background Animation */
@@ -53,7 +52,7 @@
     .aurora-3 { top: 35%; left: -150px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(0, 229, 255, 0.35) 0%, rgba(37, 99, 235, 0.2) 50%, transparent 75%); animation-duration: 18s; }
     @keyframes floatBreath { 0% { transform: scale(1) translate(0, 0); } 100% { transform: scale(1.12) translate(25px, 20px); } }
 
-    /* Grid Layout Utama */
+    /* Grid Layout Utama (TV) */
     .tv-grid {
       display: grid;
       grid-template-columns: 440px 1fr;
@@ -101,7 +100,6 @@
     .header-dot { width: 8px; height: 8px; background: var(--blue-accent); border-radius: 50%; box-shadow: 0 0 8px var(--blue-accent); }
     .day-pill { background: linear-gradient(135deg, var(--blue-accent), var(--cyan-bright)); color: #ffffff; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 0.8px; }
     
-    /* Auto Scroll untuk Jadwal di Layar Kecil */
     .table-wrapper { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; scrollbar-width: none; }
     .table-wrapper::-webkit-scrollbar { display: none; }
     
@@ -116,19 +114,7 @@
     tr.active-now td { background: linear-gradient(90deg, rgba(0, 229, 255, 0.28), rgba(37, 99, 235, 0.18)); color: var(--navy-blue); font-weight: 900; border-left: 4px solid var(--blue-accent); }
 
     /* Media Box */
-    .media-box {
-      grid-column: 2;
-      grid-row: 2;
-      position: relative;
-      background: #0f172a;
-      border-radius: 20px;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 20px 45px rgba(28, 39, 102, 0.18);
-      border: 2px solid rgba(255, 255, 255, 0.85);
-    }
+    .media-box { grid-column: 2; grid-row: 2; position: relative; background: #0f172a; border-radius: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 20px 45px rgba(28, 39, 102, 0.18); border: 2px solid rgba(255, 255, 255, 0.85); }
     .frame-corner { position: absolute; width: 20px; height: 20px; z-index: 12; pointer-events: none; }
     .fc-tl { top: 12px; left: 12px; border-top: 3px solid var(--cyan-bright); border-left: 3px solid var(--cyan-bright); border-top-left-radius: 6px; }
     .fc-tr { top: 12px; right: 12px; border-top: 3px solid var(--cyan-bright); border-right: 3px solid var(--cyan-bright); border-top-right-radius: 6px; }
@@ -154,7 +140,7 @@
     @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
     /* ========================================================
-       MEDIA QUERIES (RESPONSIF UNTUK TABLET & PONSEL)
+       MEDIA QUERIES (OPTIMASI KHUSUS HP/MOBILE)
        ======================================================== */
     @media (max-width: 1024px) {
       .tv-grid { grid-template-columns: 320px 1fr; }
@@ -162,29 +148,65 @@
       th, td { font-size: 11px; }
     }
 
+    /* Target Layar Handphone */
     @media (max-width: 768px) {
-      /* Ubah layout menjadi satu kolom ke bawah untuk layar sempit */
-      .tv-grid { 
-        display: flex; 
-        flex-direction: column; 
-        overflow-y: auto; /* Izinkan scroll vertikal pada container utama di ponsel */
-        padding: 10px;
-        gap: 10px;
+      /* 1. Buka Kunci Scroll pada Body */
+      body { 
+        height: auto !important; 
+        min-height: 100vh; 
+        overflow-y: auto !important; 
       }
-      body { overflow: auto; touch-action: auto; } /* Kembalikan sifat scroll native */
       
-      .header-box, .clock-box { padding: 10px; justify-content: center; }
-      .clock-box { flex-direction: column; gap: 8px; text-align: center; }
+      /* 2. Ubah Layout Grid ke Flexbox Menyusun ke Bawah (Stacking) */
+      .tv-grid { 
+        display: flex !important; 
+        flex-direction: column; 
+        height: auto !important; 
+        padding: 14px; 
+        gap: 16px; 
+      }
+      
+      /* 3. Atur Urutan Konten (Header -> Jam -> Media -> Jadwal -> Ticker) */
+      .header-box { order: 1; justify-content: center; }
+      .clock-box { order: 2; flex-direction: column; text-align: center; padding: 18px; gap: 12px; }
       .clock-content { text-align: center; }
       
-      .schedule-box { min-height: 350px; }
-      .media-box { min-height: 300px; }
-      .ticker-bar { padding: 8px; }
+      .media-box { 
+        order: 3; 
+        width: 100%; 
+        height: auto; 
+        /* Atur tinggi rasio untuk HP */
+        aspect-ratio: 4/3; 
+        min-height: 250px; 
+        max-height: 400px;
+      }
+      
+      .schedule-box { 
+        order: 4; 
+        height: auto !important; 
+        min-height: 450px; 
+      }
+      
+      .ticker-bar { order: 5; margin-top: 8px; }
+
+      /* 4. Perbaikan Ukuran Teks untuk Mobile */
+      .clock-time { font-size: 40px; }
+      .school-info h1 { font-size: 20px; }
+      th, td { font-size: 12px; padding: 8px 4px; }
+      
+      /* 5. Lepas batasan pada container tabel agar scrollable vertikal */
+      .table-wrapper {
+        overflow-y: visible !important; 
+        height: auto !important;
+      }
+      
+      table { height: auto !important; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Latar Belakang Geometris -->
   <div class="bg-stage">
     <div class="bg-dots"></div>
     <div class="aurora-orb aurora-1"></div>
@@ -213,13 +235,13 @@
       <div class="clock-content"><div class="clock-time" id="digitalClock">00:00:00</div><div class="clock-date" id="currentDate">Memuat...</div></div>
     </div>
 
-    <!-- Jadwal -->
+    <!-- Jadwal Pembelajaran -->
     <div class="glass-card schedule-box">
       <div class="schedule-header"><h2><span class="header-dot"></span>Jam Pembelajaran</h2><span class="day-pill" id="dayPill">HARI</span></div>
       <div class="table-wrapper"><table id="mainTable"><thead><tr id="scheduleHead"></tr></thead><tbody id="scheduleBody"></tbody></table></div>
     </div>
 
-    <!-- Media Box -->
+    <!-- Media Box (Google Drive) -->
     <div class="media-box" id="mediaContainer">
       <div class="frame-corner fc-tl"></div><div class="frame-corner fc-tr"></div><div class="frame-corner fc-bl"></div><div class="frame-corner fc-br"></div>
       <div class="media-live-tag"><span class="live-dot"></span><span id="mediaTagText">INFORMASI TERKINI</span></div>
@@ -227,7 +249,7 @@
       <div class="progress-bar-container"><div class="progress-bar-fill" id="progressBar"></div></div>
     </div>
 
-    <!-- Ticker -->
+    <!-- Ticker Pengumuman Berjalan -->
     <div class="ticker-bar">
       <div class="ticker-label">Pengumuman</div>
       <div class="ticker-track"><div class="ticker-text" id="tickerText">Selamat datang di SMA IPIEMS Surabaya • Terus berprestasi dan junjung tinggi integritas • Mari kita tuntaskan setiap proses pembelajaran dengan optimal!</div></div>
@@ -337,7 +359,7 @@
     updateClockAndSchedule();
 
     // ==========================================
-    // 3. MULTIMEDIA ROTATOR
+    // 3. MULTIMEDIA ROTATOR (IFRAME MURNI)
     // ==========================================
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7I4IwrFQcn7KagWqup7wsKs6xVDlO-bYQCs0tDU5tUn4ymddNf3jnIntW-RZP-vyP7A/exec";
 
