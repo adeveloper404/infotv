@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Mencegah pengguna melakukan zoom in/out di perangkat seluler -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Informasi - SMA IPIEMS Surabaya</title>
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1Q1HT3ZE3LC4Zd21ddzF0kdIH6brmDWw1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +16,6 @@
       --cyan-bright: #00e5ff;
       --blue-accent: #2563eb;
       --pink-magenta: #e91e63;
-      --pink-light: #ff6090;
       --gold: #ffb300;
       --card-bg: rgba(255, 255, 255, 0.78);
       --card-border: rgba(255, 255, 255, 0.85);
@@ -28,17 +28,20 @@
       padding: 0;
       font-family: 'Plus Jakarta Sans', sans-serif;
       user-select: none;
+      /* Mencegah highlight biru saat teks disentuh di ponsel */
+      -webkit-tap-highlight-color: transparent; 
     }
 
     body {
       width: 100vw;
       height: 100vh;
-      overflow: hidden;
+      overflow: hidden; /* Mencegah scroll keseluruhan halaman */
       background-color: var(--bg-base);
       color: #1e293b;
       display: flex;
       flex-direction: column;
       position: relative;
+      touch-action: none; /* Mencegah pull-to-refresh di ponsel */
     }
 
     /* Background Animation */
@@ -97,7 +100,11 @@
     .schedule-header h2 { font-size: 15px; font-weight: 800; text-transform: uppercase; color: var(--navy-blue); display: flex; align-items: center; gap: 6px; }
     .header-dot { width: 8px; height: 8px; background: var(--blue-accent); border-radius: 50%; box-shadow: 0 0 8px var(--blue-accent); }
     .day-pill { background: linear-gradient(135deg, var(--blue-accent), var(--cyan-bright)); color: #ffffff; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: 0.8px; }
-    .table-wrapper { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    
+    /* Auto Scroll untuk Jadwal di Layar Kecil */
+    .table-wrapper { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; scrollbar-width: none; }
+    .table-wrapper::-webkit-scrollbar { display: none; }
+    
     table { width: 100%; height: 100%; border-collapse: separate; border-spacing: 0 2px; table-layout: fixed; }
     th { background: rgba(28, 39, 102, 0.08); color: var(--navy-blue); padding: 5px 4px; text-align: center; font-weight: 800; font-size: 12px; border-radius: 6px; }
     th.col-ke { width: 22%; } th.col-jam { width: 78%; }
@@ -122,56 +129,18 @@
       box-shadow: 0 20px 45px rgba(28, 39, 102, 0.18);
       border: 2px solid rgba(255, 255, 255, 0.85);
     }
-
     .frame-corner { position: absolute; width: 20px; height: 20px; z-index: 12; pointer-events: none; }
     .fc-tl { top: 12px; left: 12px; border-top: 3px solid var(--cyan-bright); border-left: 3px solid var(--cyan-bright); border-top-left-radius: 6px; }
     .fc-tr { top: 12px; right: 12px; border-top: 3px solid var(--cyan-bright); border-right: 3px solid var(--cyan-bright); border-top-right-radius: 6px; }
     .fc-bl { bottom: 16px; left: 12px; border-bottom: 3px solid var(--pink-magenta); border-left: 3px solid var(--pink-magenta); border-bottom-left-radius: 6px; }
     .fc-br { bottom: 16px; right: 12px; border-bottom: 3px solid var(--pink-magenta); border-right: 3px solid var(--pink-magenta); border-bottom-right-radius: 6px; }
 
-    .media-live-tag {
-      position: absolute;
-      top: 16px;
-      left: 20px;
-      z-index: 15;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(8px);
-      padding: 5px 12px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      color: #ffffff;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-    }
+    .media-live-tag { position: absolute; top: 16px; left: 20px; z-index: 15; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(8px); padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; gap: 7px; color: #ffffff; font-size: 11px; font-weight: 800; letter-spacing: 0.8px; }
     .live-dot { width: 8px; height: 8px; background: #00e676; border-radius: 50%; box-shadow: 0 0 10px #00e676; animation: blinkDot 1.5s infinite; }
     @keyframes blinkDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
 
-    .media-blur-bg {
-      position: absolute;
-      inset: -30px;
-      background-size: cover;
-      background-position: center;
-      filter: blur(34px) brightness(0.48);
-      z-index: 1;
-      transform: scale(1.15);
-      transition: background-image 0.6s ease;
-    }
-
-    /* Ukuran media mengisi kotak rapi */
-    .media-element {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      height: 100%;
-      object-fit: contain; 
-      border-radius: 18px;
-      border: none;
-      animation: mediaFadeIn 0.5s ease-out;
-    }
+    .media-blur-bg { position: absolute; inset: -30px; background-size: cover; background-position: center; filter: blur(34px) brightness(0.48); z-index: 1; transform: scale(1.15); transition: background-image 0.6s ease; }
+    .media-element { position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain; border-radius: 18px; border: none; animation: mediaFadeIn 0.5s ease-out; }
     @keyframes mediaFadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
     .progress-bar-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 7px; background: rgba(255, 255, 255, 0.22); z-index: 15; }
@@ -183,6 +152,35 @@
     .ticker-track { flex: 1; white-space: nowrap; overflow: hidden; }
     .ticker-text { display: inline-block; color: #ffffff; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; animation: tickerMove 30s linear infinite; }
     @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+    /* ========================================================
+       MEDIA QUERIES (RESPONSIF UNTUK TABLET & PONSEL)
+       ======================================================== */
+    @media (max-width: 1024px) {
+      .tv-grid { grid-template-columns: 320px 1fr; }
+      .clock-time { font-size: 36px; }
+      th, td { font-size: 11px; }
+    }
+
+    @media (max-width: 768px) {
+      /* Ubah layout menjadi satu kolom ke bawah untuk layar sempit */
+      .tv-grid { 
+        display: flex; 
+        flex-direction: column; 
+        overflow-y: auto; /* Izinkan scroll vertikal pada container utama di ponsel */
+        padding: 10px;
+        gap: 10px;
+      }
+      body { overflow: auto; touch-action: auto; } /* Kembalikan sifat scroll native */
+      
+      .header-box, .clock-box { padding: 10px; justify-content: center; }
+      .clock-box { flex-direction: column; gap: 8px; text-align: center; }
+      .clock-content { text-align: center; }
+      
+      .schedule-box { min-height: 350px; }
+      .media-box { min-height: 300px; }
+      .ticker-bar { padding: 8px; }
+    }
   </style>
 </head>
 <body>
@@ -200,7 +198,7 @@
   </div>
 
   <div class="tv-grid">
-    <!-- Header -->
+    <!-- Header Kiri -->
     <div class="glass-card header-box">
       <div class="logo-frame"><img src="https://lh3.googleusercontent.com/d/1Q1HT3ZE3LC4Zd21ddzF0kdIH6brmDWw1" alt="Logo SMA"></div>
       <div class="school-info">
@@ -208,6 +206,8 @@
         <div class="tagline"><span class="tagline-badge"></span><span>Sekolah Sains & Bakat</span></div>
       </div>
     </div>
+    
+    <!-- Header Kanan -->
     <div class="glass-card clock-box">
       <div class="badge-unggul"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><div><div class="badge-text-top">Pusat Prestasi</div><div class="badge-text-main">SEKOLAH UNGGUL</div></div></div>
       <div class="clock-content"><div class="clock-time" id="digitalClock">00:00:00</div><div class="clock-date" id="currentDate">Memuat...</div></div>
@@ -219,7 +219,7 @@
       <div class="table-wrapper"><table id="mainTable"><thead><tr id="scheduleHead"></tr></thead><tbody id="scheduleBody"></tbody></table></div>
     </div>
 
-    <!-- Media Player -->
+    <!-- Media Box -->
     <div class="media-box" id="mediaContainer">
       <div class="frame-corner fc-tl"></div><div class="frame-corner fc-tr"></div><div class="frame-corner fc-bl"></div><div class="frame-corner fc-br"></div>
       <div class="media-live-tag"><span class="live-dot"></span><span id="mediaTagText">INFORMASI TERKINI</span></div>
@@ -337,9 +337,8 @@
     updateClockAndSchedule();
 
     // ==========================================
-    // 3. MULTIMEDIA ROTATOR (IFRAME MURNI)
+    // 3. MULTIMEDIA ROTATOR
     // ==========================================
-    // PASTIKAN ANDA MENGGANTI LINK INI DENGAN DEPLOYMENT BARU ANDA
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz7I4IwrFQcn7KagWqup7wsKs6xVDlO-bYQCs0tDU5tUn4ymddNf3jnIntW-RZP-vyP7A/exec";
 
     let playlist = [
@@ -383,14 +382,11 @@
 
         const iframe = document.createElement('iframe');
         iframe.className = 'media-element';
-        // Tambahan autoplay=1 agar video memutar otomatis
         iframe.src = media.url + "?autoplay=1";
-        // Atribut penting agar browser mengizinkan autoplay di dalam iframe
         iframe.setAttribute('allow', 'autoplay; fullscreen');
         iframe.setAttribute('allowfullscreen', 'true');
         
         iframe.onload = () => {
-          // Memberikan jeda buffering 3.5 detik untuk Google Drive Player sebelum timer jalan
           setTimeout(() => {
             progressBar.style.transition = `width ${mediaDuration}s linear`;
             progressBar.style.width = '100%';
